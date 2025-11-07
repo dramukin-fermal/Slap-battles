@@ -463,9 +463,9 @@ Game:AddSlider({
 
 Game:AddSlider({
   Name = "Auto do gen speed",
-  Min = 3,
+  Min = 1.5,
   Max = 30,
-  Increase = 1,
+  Increase = .5,
   Default = 3,
   Callback = function(v)
     gen=v
