@@ -2,7 +2,7 @@ RButtonImageId = 82975918449230
 EButtonImageId = 117753257776333
 BannerImageId = 2271366059
 
-loccal GloveSettings = GloveSettings or {
+GloveSettings = GloveSettings or {
 	ShowHitboxes = true,
 	MuteClientSFX = false,
 	HideVisual = false
