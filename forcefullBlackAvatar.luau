@@ -17,8 +17,13 @@ local function match(part, e)
     local c = character[part].Color
     return math.floor(c.r*255+0.5)==e.r and math.floor(c.g*255+0.5)==e.g and math.floor(c.b*255+0.5)==e.b
 end
+local items = {"Pants","Shirt","Accessory","CharacterMesh"}
+local hasItem = false
+for _,v in ipairs(items) do
+    if character:FindFirstChild(v) then hasItem = true break end
+end
 
-if not (match("Right Arm", outfitInfo.RightArmColor) and match("Left Arm", outfitInfo.LeftArmColor) and match("Torso", outfitInfo.TorsoColor) and match("Head", outfitInfo.HeadColor) and match("Right Leg", outfitInfo.RightLegColor) and match("Left Leg", outfitInfo.LeftLegColor)) then
+if not (match("Right Arm", outfitInfo.RightArmColor) and match("Left Arm", outfitInfo.LeftArmColor) and match("Torso", outfitInfo.TorsoColor) and match("Head", outfitInfo.HeadColor) and match("Right Leg", outfitInfo.RightLegColor) and match("Left Leg", outfitInfo.LeftLegColor)) or hasItem then
     if game.PlaceId ~= tonumber("7041939546") then
 	    local queue_on_teleport = queueonteleport or queue_on_teleport
 		if queue_on_teleport then
