@@ -85,7 +85,11 @@ if not (match("Right Arm", outfitInfo.RightArmColor) and match("Left Arm", outfi
 			    wait(2)
 			    game.ReplicatedStorage.Events.ClientSaveOutfitToRoblox:Fire(nil, nil, nil, true)
 			    wait()
-			
+				StarterGui:SetCore("SendNotification", {
+			        Title = "System",
+			        Text = "You have to save this avatar as your current roblox avatar",
+			        Duration = 3
+			    })
 			    for i = 1, 10 do
 			        wait()
 			        clickCenter(PlayerGui.SaveOutfitToRobloxV3.Main.PageHolder.StageOne_HowToSave.Options.RobloxAvatar)
@@ -107,72 +111,80 @@ if not (match("Right Arm", outfitInfo.RightArmColor) and match("Left Arm", outfi
         wait(10)
         game.Players.LocalPlayer:Kick("Turn off Delta's verify teleport first\n You have to watch tutorial")
         return
-    end
+    else
 
-    local PlayerGui = LocalPlayer.PlayerGui
-    local VIM = game:GetService("VirtualInputManager")
-    local GuiService = game:GetService("GuiService")
-	local StarterGui = game:GetService("StarterGui")
-	local TeleportService = game:GetService("TeleportService")
-
-	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = "TeleportBackGui"
-	ScreenGui.ResetOnSpawn = false
-	ScreenGui.Parent = PlayerGui
+	    local PlayerGui = LocalPlayer.PlayerGui
+	    local VIM = game:GetService("VirtualInputManager")
+	    local GuiService = game:GetService("GuiService")
+		local StarterGui = game:GetService("StarterGui")
+		local TeleportService = game:GetService("TeleportService")
 	
-	local Button = Instance.new("TextButton")
-	Button.Name = "TeleportBackButton"
-	Button.Size = UDim2.new(0, 160, 0, 40)
-	Button.Position = UDim2.new(0.5, -60, 0, 10)
-	Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Button.Font = Enum.Font.GothamBold
-	Button.TextSize = 16
-	Button.Text = "Teleport Back"
-	Button.Parent = ScreenGui
+		local ScreenGui = Instance.new("ScreenGui")
+		ScreenGui.Name = "TeleportBackGui"
+		ScreenGui.ResetOnSpawn = false
+		ScreenGui.Parent = PlayerGui
+		
+		local Button = Instance.new("TextButton")
+		Button.Name = "TeleportBackButton"
+		Button.Size = UDim2.new(0, 160, 0, 40)
+		Button.Position = UDim2.new(0.5, -60, 0, 10)
+		Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+		Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Button.Font = Enum.Font.GothamBold
+		Button.TextSize = 16
+		Button.Text = "Teleport Back"
+		Button.Parent = ScreenGui
+		
+		Button.MouseButton1Click:Connect(function()
+		    StarterGui:SetCore("SendNotification", {
+		        Title = "Teleporting",
+		        Text = "Teleporting to Slap Battles...",
+		        Duration = 3
+		    })
+		    TeleportService:Teleport(tonumber("124596094333302"))
+		end)
+	    local function clickCenter(button)
+	        local pos = button.AbsolutePosition
+	        local size = button.AbsoluteSize
+	        local inset = GuiService:GetGuiInset()
+	        local x = pos.X + size.X / 2
+	        local y = pos.Y + size.Y / 2 + inset.Y
 	
-	Button.MouseButton1Click:Connect(function()
-	    StarterGui:SetCore("SendNotification", {
-	        Title = "Teleporting",
-	        Text = "Teleporting to Slap Battles...",
+	        if mousemoveabs then
+	            mousemoveabs(x, y)
+	            wait(0.05)
+	            mouse1press()
+	            wait(0.05)
+	            mouse1release()
+	        else
+	            VIM:SendMouseMoveEvent(x, y, game)
+	            wait()
+	            VIM:SendMouseButtonEvent(x, y, 0, true, game, 0)
+	            wait()
+	            VIM:SendMouseButtonEvent(x, y, 0, false, game, 0)
+	        end
+	    end
+	
+	    game:GetService("ReplicatedStorage").CommunityOutfitsRemote:InvokeServer(unpack(args))
+	    wait(2)
+		StarterGui:SetCore("SendNotification", {
+	        Title = "System",
+	        Text = "You have to save this avatar as your current roblox avatar",
 	        Duration = 3
 	    })
-	    TeleportService:Teleport(tonumber("124596094333302"))
-	end)
-    local function clickCenter(button)
-        local pos = button.AbsolutePosition
-        local size = button.AbsoluteSize
-        local inset = GuiService:GetGuiInset()
-        local x = pos.X + size.X / 2
-        local y = pos.Y + size.Y / 2 + inset.Y
-
-        if mousemoveabs then
-            mousemoveabs(x, y)
-            wait(0.05)
-            mouse1press()
-            wait(0.05)
-            mouse1release()
-        else
-            VIM:SendMouseMoveEvent(x, y, game)
-            wait()
-            VIM:SendMouseButtonEvent(x, y, 0, true, game, 0)
-            wait()
-            VIM:SendMouseButtonEvent(x, y, 0, false, game, 0)
-        end
-    end
-
-    game:GetService("ReplicatedStorage").CommunityOutfitsRemote:InvokeServer(unpack(args))
-    wait(2)
-    game.ReplicatedStorage.Events.ClientSaveOutfitToRoblox:Fire(nil, nil, nil, true)
-    wait()
-
-    for i = 1, 10 do
-        wait()
-        clickCenter(PlayerGui.SaveOutfitToRobloxV3.Main.PageHolder.StageOne_HowToSave.Options.RobloxAvatar)
-    end
-    for i = 1, 10 do
-        wait()
-        clickCenter(PlayerGui.SaveOutfitToRobloxV3.Main.PageHolder.StageTwo_OwnershipCheck.SaveButton)
-    end
-    return
+	    game.ReplicatedStorage.Events.ClientSaveOutfitToRoblox:Fire(nil, nil, nil, true)
+	    wait()
+	
+	    for i = 1, 10 do
+	        wait()
+	        clickCenter(PlayerGui.SaveOutfitToRobloxV3.Main.PageHolder.StageOne_HowToSave.Options.RobloxAvatar)
+	    end
+	    for i = 1, 10 do
+	        wait()
+	        clickCenter(PlayerGui.SaveOutfitToRobloxV3.Main.PageHolder.StageTwo_OwnershipCheck.SaveButton)
+	    end
+	end
+	return false
+else
+	return true
 end
