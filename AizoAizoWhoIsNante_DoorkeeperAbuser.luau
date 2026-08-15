@@ -76,7 +76,8 @@ local places = {
     ["Emote Room"] = game:GetService("Workspace").BoogieShop.Building.roof:GetPivot() * CFrame.new(0,-5,0),
     ["Kick"] = CFrame.new(17945, -130, -3540),
     ["Sky"] = CFrame.new(0,10000,0),
-    ["Your Position"] = LocalPlayer.Character and LocalPlayer.Character:GetPivot() or CFrame.new(0,0,0),
+    ["High Sky"] = CFrame.new(0,1000000000,0),
+    ["Your Position"] = CFrame.new(0,0,0),
 }
 spawn(function()
 	pcall(function()
@@ -457,7 +458,7 @@ bringBtn.MouseButton1Click:Connect(function()
     enterArena()
     local cframe = places[selectedPlace]
     if selectedPlace == "Your Position" then 
-	    selectedPlace = LocalPlayer.Character and LocalPlayer.Character:GetPivot() or CFrame.new(0,0,0)
+	    cframe = LocalPlayer.Character and LocalPlayer.Character:GetPivot() or CFrame.new(0,0,0)
     end
 	placeDoor(cframe, selectedPlace ~= "Kick")
 	
