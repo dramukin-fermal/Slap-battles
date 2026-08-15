@@ -41,14 +41,14 @@ local function placeDoor(pos, safe)
 	spawn(function()
 		local st = tick()
 		local old = game.Players.LocalPlayer.Character:GetPivot()
-		while tick() - st < .5 do
+		while tick() - st < .7 do
 			LocalPlayer.Character:PivotTo(pos * CFrame.new(0,10,0))
 			LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
 			task.wait()
 		end
 		LocalPlayer.Character:PivotTo(old)
 	end)
-	wait(.4)
+	wait(.6)
 	local pos2 = safe and (pos * CFrame.Angles(math.rad(-90),0,0)) or pos
 	ReplicatedStorage:FindFirstChild("GeneralAbility"):FireServer(pos2)
 	wait(.1)
@@ -72,11 +72,12 @@ local places = {
     ["Hitman Upper"] = CFrame.new(17893, -15, -3564),
     ["Hitman Base"]  = CFrame.new(17896, -112, -3475),
     ["Default Island"] = CFrame.new(-907, 378, -3),
+    ["Lobby"] = CFrame.new(-907, 320, -3),
     ["RepressedMemories"] = workspace.RepressedMemories.Portal:GetPivot() * CFrame.new(0,30,0),
     ["Emote Room"] = game:GetService("Workspace").BoogieShop.Building.roof:GetPivot() * CFrame.new(0,-5,0),
     ["Kick"] = CFrame.new(17945, -130, -3540),
     ["Sky"] = CFrame.new(0,10000,0),
-    ["High Sky"] = CFrame.new(0,1000000000,0),
+    ["Sky But Higher"] = CFrame.new(0,10000000,0),
     ["Your Position"] = CFrame.new(0,0,0),
 }
 spawn(function()
