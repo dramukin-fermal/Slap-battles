@@ -10,11 +10,6 @@ local plrs = game.Players
 local StarterGui = game:GetService("StarterGui")
 local lp = plrs.LocalPlayer
 
-local function body(plr)
-    plr = lp or plr
-    return plr.Character, plr.Character:FindFirstChild("HumanoidRootPart"), plr.Character:FindFirstChild("Humanoid")
-end
-
 local function notify(title, text, duration)
     pcall(function()
         StarterGui:SetCore("SendNotification", {
@@ -37,7 +32,8 @@ if game.PlaceId ~= subplace then
     return
 end
 
-notify("Script Executed", "Script executed. Wait 5 minutes to get the combat badge!", 8)
+notify("Unpatched", "Dying at round 5 problem fixed!", 8)
+notify("Script Executed", "Wait 5 minutes to get the combat glove!", 8)
 
 local ANCHOR_POS = Vector3.new(-70, 61, -57)
 local MAX_DIST = 180
@@ -45,8 +41,9 @@ local OFFSET_RANGE = 0.5
 local Y_OFFSET = 0.5
 
 local function setTransparency(alpha)
-    if not lp.Character then return end
-    for _, part in ipairs(lp.Character:GetDescendants()) do
+    local char = lp.Character
+    if not char then return end
+    for _, part in ipairs(char:GetDescendants()) do
         if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
             part.Transparency = alpha
         elseif part:IsA("Decal") then
@@ -57,6 +54,20 @@ end
 
 setTransparency(1)
 
+-- Loop liên tục disable CanTouch của toàn bộ bộ phận người chơi
+task.spawn(function()
+    while task.wait(0.1) do
+        local char = lp.Character
+        if char then
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") and part.CanTouch then
+                    part.CanTouch = false
+                end
+            end
+        end
+    end
+end)
+
 task.spawn(function()
     while task.wait() do
         if lp.CameraMode ~= Enum.CameraMode.Classic then
@@ -65,8 +76,34 @@ task.spawn(function()
     end
 end)
 
+local function isRagdolled(char)
+    local ragdollVal = char and char:FindFirstChild("Ragdolled")
+    if ragdollVal and ragdollVal:IsA("BoolValue") and ragdollVal.Value == true then
+        return true
+    end
+    return false
+end
+
+-- Hàm tele chân, tay, đầu về anchor pos khi bị ragdoll
+local function handleRagdollLimbs(char)
+    if isRagdolled(char) then
+        local targetCF = CFrame.new(ANCHOR_POS)
+        for _, partName in ipairs({"Left Arm", "Right Arm", "Left Leg", "Right Leg", "Head"}) do
+            local part = char:FindFirstChild(partName)
+            if part and part:IsA("BasePart") then
+                part.CFrame = targetCF
+                part.AssemblyLinearVelocity = Vector3.zero
+            end
+        end
+    end
+end
+
 while task.wait() do
-    local originalCFrame = lp.Character and lp.Character.HumanoidRootPart.CFrame
+    local char = lp.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if not char or not hrp then continue end
+
+    local originalCFrame = hrp.CFrame
     local foundEnemy = false
 
     for i, v in pairs(workspace.Enemies:GetChildren()) do
@@ -86,27 +123,42 @@ while task.wait() do
             and v.HumanoidRootPart.CFrame.Y >= 40
             and (v.HumanoidRootPart.Position - ANCHOR_POS).Magnitude <= MAX_DIST
             and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") do
+            
+            local activeChar = lp.Character
+            local activeHrp = activeChar:FindFirstChild("HumanoidRootPart")
+            if not activeHrp then break end
+
             local offset = Vector3.new(
                 (math.random() - 0.5) * 2 * OFFSET_RANGE,
                 Y_OFFSET,
                 (math.random() - 0.5) * 2 * OFFSET_RANGE
             )
             local spin = CFrame.Angles(math.rad(math.random(-180, 180)), math.rad(math.random(-180, 180)), 0)
-            lp.Character:PivotTo(v.HumanoidRootPart.CFrame * CFrame.new(offset) * spin)
-            lp.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(1000, -50, 0)
+            
+            activeHrp.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(offset) * spin
+            activeHrp.AssemblyLinearVelocity = Vector3.new(1000, -50, 0)
+            
+            handleRagdollLimbs(activeChar)
+            
             task.wait()
         end
 
-        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") and originalCFrame then
-            lp.Character:PivotTo(originalCFrame)
-            lp.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+        local activeChar = lp.Character
+        local activeHrp = activeChar and activeChar:FindFirstChild("HumanoidRootPart")
+        if activeHrp and originalCFrame then
+            activeHrp.CFrame = originalCFrame
+            activeHrp.AssemblyLinearVelocity = Vector3.zero
+            handleRagdollLimbs(activeChar)
         end
     end
 
     if not foundEnemy then
-        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-            lp.Character:PivotTo(CFrame.new(ANCHOR_POS))
-            lp.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+        local activeChar = lp.Character
+        local activeHrp = activeChar and activeChar:FindFirstChild("HumanoidRootPart")
+        if activeHrp then
+            activeHrp.CFrame = CFrame.new(ANCHOR_POS)
+            activeHrp.AssemblyLinearVelocity = Vector3.zero
+            handleRagdollLimbs(activeChar)
         end
     end
 end
