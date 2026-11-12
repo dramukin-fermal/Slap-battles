@@ -53,8 +53,6 @@ local function setTransparency(alpha)
 end
 
 setTransparency(1)
-
--- Loop liên tục disable CanTouch của toàn bộ bộ phận người chơi
 task.spawn(function()
     while task.wait(0.1) do
         local char = lp.Character
@@ -83,8 +81,6 @@ local function isRagdolled(char)
     end
     return false
 end
-
--- Hàm tele chân, tay, đầu về anchor pos khi bị ragdoll
 local function handleRagdollLimbs(char)
     if isRagdolled(char) then
         local targetCF = CFrame.new(ANCHOR_POS)
@@ -128,11 +124,7 @@ while task.wait() do
             local activeHrp = activeChar:FindFirstChild("HumanoidRootPart")
             if not activeHrp then break end
 
-            local offset = Vector3.new(
-                (math.random() - 0.5) * 2 * OFFSET_RANGE,
-                Y_OFFSET,
-                (math.random() - 0.5) * 2 * OFFSET_RANGE
-            )
+            local offset = Vector3.new((math.random() - 0.5) * 2 * OFFSET_RANGE,Y_OFFSET,(math.random() - 0.5) * 2 * OFFSET_RANGE)
             local spin = CFrame.Angles(math.rad(math.random(-180, 180)), math.rad(math.random(-180, 180)), 0)
             
             activeHrp.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(offset) * spin
